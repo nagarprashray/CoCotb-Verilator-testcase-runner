@@ -1,23 +1,26 @@
 param(
-    [string]$Example = "counter",
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string]$TestcasePath,
+    [Parameter(Position = 1)]
     [ValidateSet("auto", "both", "python", "sv")][string]$Mode = "auto"
 )
 $ErrorActionPreference = "Stop"
 
 $workspace = (Resolve-Path -LiteralPath $PSScriptRoot).Path
-$candidate = if ([IO.Path]::IsPathRooted($Example)) {
-    $Example
+$candidate = if ([IO.Path]::IsPathRooted($TestcasePath)) {
+    $TestcasePath
 } else {
-    Join-Path $workspace $Example
+    Join-Path $workspace $TestcasePath
 }
-$isFolderCase = Test-Path -LiteralPath $candidate -PathType Container
+if (-not (Test-Path -LiteralPath $candidate -PathType Container)) {
+    throw "Testcase folder does not exist: $TestcasePath"
+}
 $makeVariables = @()
 $expectCompileFailure = $false
 $externalCasePath = $null
-$caseDisplayName = $Example
+$caseDisplayName = $TestcasePath
 
-if ($isFolderCase) {
-    $casePath = (Resolve-Path -LiteralPath $candidate).Path
+$casePath = (Resolve-Path -LiteralPath $candidate).Path
     $caseDisplayName = Split-Path -Leaf $casePath
     $isInternalCase = $casePath.StartsWith($workspace + [IO.Path]::DirectorySeparatorChar)
     if ($isInternalCase) {
@@ -34,18 +37,18 @@ if ($isFolderCase) {
     $pythonFiles = @(Get-ChildItem -LiteralPath $casePath -Recurse -File -Filter '*.py' -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -ne '__init__.py' })
 
-    if ($rtlFiles.Count -eq 0) { throw "No .v or .sv DUT files found in $Example/rtl" }
+    if ($rtlFiles.Count -eq 0) { throw "No .v or .sv DUT files found in $TestcasePath/rtl" }
     if ($Mode -eq 'auto') {
         if ($svFiles.Count -gt 0 -and $pythonFiles.Count -gt 0) { $Mode = 'both' }
         elseif ($pythonFiles.Count -gt 0) { $Mode = 'python' }
         elseif ($svFiles.Count -gt 0) { $Mode = 'sv' }
-        else { throw "No testbench found under $Example" }
+        else { throw "No testbench found under $TestcasePath" }
     }
     if ($Mode -in 'both', 'sv' -and $svFiles.Count -eq 0) {
-        throw "Mode '$Mode' requires a SystemVerilog testbench in $Example/tb"
+        throw "Mode '$Mode' requires a SystemVerilog testbench in $TestcasePath/tb"
     }
     if ($Mode -in 'both', 'python' -and $pythonFiles.Count -eq 0) {
-        throw "Mode '$Mode' requires a Python test under $Example"
+        throw "Mode '$Mode' requires a Python test under $TestcasePath"
     }
 
     $metaPath = Join-Path $casePath 'meta.json'
@@ -80,13 +83,6 @@ if ($isFolderCase) {
     $makeVariables += "CASE_DUT_TOP=$dutTop"
     $makeVariables += "CASE_SV_TOP=$svTop"
     $makeVariables += "CASE_PY_MODULES=$pythonModules"
-} else {
-    if ($Example -notin 'counter', 'fifo') {
-        throw "Unknown example or testcase folder: $Example"
-    }
-    if ($Mode -eq 'auto') { $Mode = 'both' }
-    $makeVariables += "EXAMPLE=$Example"
-}
 
 $resultKey = ($caseDisplayName -replace '[^A-Za-z0-9_.-]', '_')
 $resultDirectory = "results/$resultKey"
