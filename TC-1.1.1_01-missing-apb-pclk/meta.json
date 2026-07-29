@@ -1,0 +1,18 @@
+{
+    "test_case_id": "TC-1.1.1_01",
+    "category": "TC-1.1.1 - Missing Clock",
+    "subcategory": "Control Block Clock Faults",
+    "tier": "Tier-1: Compilation/Elaboration Failure",
+    "target_module": "apb_axi_bridge_top",
+    "target_instance": "u_apb_slave",
+    "target_port": "pclk",
+    "fault_type": "Named Port - Omitted Connection",
+    "injection_method": "Commented out .pclk(pclk) connection in module instantiation",
+    "expected_symptom": "Compile Fail with `default_nettype none directive",
+    "severity": "Critical",
+    "detection_phase": "Compile-time",
+    "cdc_impact": "APB clock domain completely non-functional",
+    "functional_impact": "APB slave interface cannot process any transactions",
+    "created_date": "2026-06-13",
+    "validation_status": "Pending"
+}

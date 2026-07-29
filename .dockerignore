@@ -1,0 +1,5 @@
+.git
+.venv
+sim_build
+results
+__pycache__

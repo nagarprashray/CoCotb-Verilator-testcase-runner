@@ -1,0 +1,11 @@
+--- a/rtl/apb_axi_bridge_top.v
++++ b/rtl/apb_axi_bridge_top.v
+@@ -96,7 +96,7 @@ module apb_axi_bridge_top #(
+         .DATA_WIDTH(DATA_WIDTH),
+         .ADDR_WIDTH(ADDR_WIDTH)
+     ) u_apb_slave (
+-        // .pclk(pclk),  // FAULT INJECTION: TC-1.1.1_01 - Missing clock connection
++        .pclk(pclk),
+         .presetn(presetn_sync),
+         .paddr(paddr), .psel(psel), .penable(penable), .pwrite(pwrite), .pwdata(pwdata), .pprot(pprot),
+         .prdata(prdata), .pready(pready), .pslverr(pslverr),

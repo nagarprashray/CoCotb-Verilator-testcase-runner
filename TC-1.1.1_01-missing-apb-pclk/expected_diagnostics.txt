@@ -1,0 +1,56 @@
+EXPECTED COMPILATION DIAGNOSTICS: TC-1.1.1_01
+==============================================
+
+VERILOG COMPILER ERRORS (with `default_nettype none):
+------------------------------------------------------
+
+ERROR: [VRFC 10-2989] 'pclk' is not declared
+  File: apb_axi_bridge_top.v
+  Line: 99
+  Instance: u_apb_slave
+  Module: apb_slave_interface
+  
+ERROR: [ELAB 1-123] port 'pclk' is not connected for instance 'u_apb_slave'
+  File: apb_axi_bridge_top.v
+  Line: 95-105
+  
+ERROR: Implicit net declaration not allowed with `default_nettype none
+  Signal: pclk
+  Context: Module instantiation u_apb_slave
+  
+LINT WARNINGS (Verilator/Spyglass):
+------------------------------------
+
+%Warning-PINCONNECTEMPTY: apb_axi_bridge_top.v:99: 
+  Cell u_apb_slave has unconnected input pin: pclk
+  
+%Warning-CLKDATA: apb_axi_bridge_top.v:95:
+  Clock port 'pclk' of module 'apb_slave_interface' is not connected
+  
+SYNTHESIS ERRORS (Vivado/Design Compiler):
+------------------------------------------
+
+ERROR: [Synth 8-689] Port pclk does not exist in module apb_slave_interface
+  Resolution: Check port connections in module instantiation
+  
+ERROR: [Synth 8-3352] multi-driven net on pin pclk
+  Reason: Unconnected input creates floating net
+  
+SIMULATION BEHAVIOR (if compilation forced):
+---------------------------------------------
+
+- APB slave interface clock input floats to 'X' (unknown)
+- All sequential logic in apb_slave_interface fails to toggle
+- pready remains at initial value (likely 1'b0)
+- APB transactions hang indefinitely
+- Testbench timeout after configured watchdog period
+- No FIFO write operations occur on APB side
+- CDC violations detected by assertion checkers
+
+EXPECTED TOOL EXIT CODES:
+--------------------------
+- iverilog: Exit code 1 (compilation error)
+- Verilator: Exit code 1 with lint errors
+- VCS: Exit code 1 (elaboration failure)
+- Vivado: Synthesis fails, no DCP generated
+- ModelSim/QuestaSim: vlog returns error status

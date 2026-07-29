@@ -1,0 +1,28 @@
+SILICON VALIDATION CHALLENGE: TC-1.1.1_01
+==========================================
+
+SYMPTOM DESCRIPTION:
+The APB-to-AXI4 bridge design fails to compile when `default_nettype none is enabled. 
+The compiler reports an implicit net declaration error related to the APB slave interface 
+instantiation. The APB clock domain appears to be missing a critical connection.
+
+OBSERVED BEHAVIOR:
+- Compilation fails with "implicit net declaration" error
+- Error points to the u_apb_slave module instantiation
+- The APB interface module expects a clock input but synthesis tools cannot infer the connection
+- All APB protocol signals (psel, penable, pwrite, etc.) are properly connected
+- Reset synchronization appears intact
+
+FUNCTIONAL IMPACT:
+- Design cannot be synthesized or simulated
+- APB slave interface would be non-functional even if compilation succeeded
+- All APB transactions would fail to register
+- Clock domain crossing FIFOs on APB side would not operate
+
+YOUR TASK:
+Identify the missing connection in the APB slave interface instantiation and provide 
+the exact fix required to restore proper clock connectivity. The fix should be a single 
+line addition that connects the appropriate clock signal to the APB slave module.
+
+HINT: Review the module instantiation for u_apb_slave and compare against the expected 
+port list for synchronous APB protocol interfaces.

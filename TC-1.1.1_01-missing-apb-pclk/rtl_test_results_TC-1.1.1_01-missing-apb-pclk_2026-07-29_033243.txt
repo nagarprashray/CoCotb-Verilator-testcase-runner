@@ -1,0 +1,93 @@
+================================================================
+RTL AGENT TEST RESULTS
+================================================================
+case_id     : TC-1.1.1_01
+case_dir    : /cases/TC-1.1.1_01-missing-apb-pclk
+run_at      : 2026-07-29T03:37:47
+phase       : compile
+overall     : FAIL
+invocation  : chipchop rtl --root .
+timeout_s   : 300
+agent_env   : LLM_MODE=openai LLM_MODEL=(unset)
+judge_model : gpt-4o-mini
+================================================================
+
+----- AGENT TRANSCRIPT (streamed live during the run) -----
+[38;2;87;201;194m───────────────── [RTL] AGENT ─────────────────[0m
+[38;2;87;201;194m[RTL][0m [38;2;138;142;150m▸[0m Initializing RTL agent
+[RTL Agent] Native tool-use mode enabled.
+[38;2;87;201;194m[RTL][0m [38;2;138;142;150m▸[0m Current RTL files: ['rtl/apb_axi_bridge_top.v', 'rtl/apb_slave_interface.v', 'rtl/async_fifo.v', 'rtl/axi_master_interface.v', 'rtl/reset_sync.v', 'rtl/transaction_tracker.v']
+[38;2;87;201;194m[RTL][0m [38;2;87;201;194m?[0m Enter instruction (or 'exit')
+[38;2;242;242;239m┌─────────────────────────────┐[0m
+[38;2;242;242;239m│ [0m[38;2;242;242;239mYOU › [0m[38;2;242;242;239m└─────────────────────────────┘[0m
+
+[38;2;87;201;194m┌ [BUILD STATUS (pre-edit grounding)] ┐[0m
+  actionable_findings: errors=2, warnings=0, total=2
+  checks: module/entity resolution, duplicate definitions, named-port mismatches, includes, package imports, deterministic RTL diagnostic errors, static lint (verilator: width/latch/case/blocking-vs-nonblocking when available)
+  compile_lint:
+  - iverilog: passed (6 files)
+  - verilator: skipped (not installed)
+  - ghdl: skipped (no VHDL RTL files)
+  top_findings:
+  [38;2;231;166;162m- [ERROR] rtl/apb_axi_bridge_top.v:95 (port_mismatch) Instance u_apb_slave of apb_slave_interface connects unknown port(s): wr_cmd_fifo_din.[0m
+  [38;2;231;166;162m- [ERROR] rtl/apb_axi_bridge_top.v:109 (port_mismatch) Instance u_axi_master of axi_master_interface connects unknown port(s): wr_cmd_fifo_dout.[0m
+[38;2;87;201;194m└─────────────────────────────────────┘[0m
+
+[RTL Agent] --- Turn 1/20 (error score: 2) ---
+[38;2;87;201;194m[RTL][0m [38;2;138;142;150m▸[0m Outline rtl/apb_axi_bridge_top.v (compact)
+
+=== PROGRESS LEDGER ===
+error count: 2
+unresolved root causes: rtl/apb_axi_bridge_top.v:95 (port_mismatch), rtl/apb_axi_bridge_top.v:109 (port_mismatch)
+=== END PROGRESS LEDGER ===
+
+[RTL Agent] --- Turn 2/20 (error score: 2) ---
+[38;2;87;201;194m[RTL][0m [38;2;138;142;150m▸[0m Read symbol apb_axi_bridge_top
+
+=== PROGRESS LEDGER ===
+error count: 2
+unresolved root causes: rtl/apb_axi_bridge_top.v:95 (port_mismatch), rtl/apb_axi_bridge_top.v:109 (port_mismatch)
+=== END PROGRESS LEDGER ===
+
+[RTL Agent] --- Turn 3/20 (error score: 2) ---
+[38;2;87;201;194m[RTL][0m [38;2;138;142;150m▸[0m Read symbol apb_slave_interface
+
+=== PROGRESS LEDGER ===
+error count: 2
+unresolved root causes: rtl/apb_axi_bridge_top.v:95 (port_mismatch), rtl/apb_axi_bridge_top.v:109 (port_mismatch)
+=== END PROGRESS LEDGER ===
+
+[RTL Agent] --- Turn 4/20 (error score: 2) ---
+
+RTL Agent (thinking): The issue with the `u_apb_slave` instantiation in `rtl/apb_axi_bridge_top.v` involves a missing connection of the `pclk` signal in the `apb_slave_interface` module. The `apb_slave_interface` module expects a `pclk` input, which is not currently connected in the instantiation within `apb_axi_bridge_top`. 
+
+To fix this, we need to add the `pclk` connection to the `u_apb_slave` instance. This connection will ensure that the clock signal is properly routed to the APB slave interface, resolving the implicit net declaration error.
+
+I'll proceed to insert the missing `pclk` connection in the `u_apb_slave` instantiation in `rtl/apb_axi_bridge_top.v`.
+
+=== PROGRESS LEDGER ===
+error count: 2
+unresolved root causes: rtl/apb_axi_bridge_top.v:95 (port_mismatch), rtl/apb_axi_bridge_top.v:109 (port_mismatch)
+=== END PROGRESS LEDGER ===
+
+[RTL Agent] --- Turn 5/20 (error score: 2) ---
+
+=== PROGRESS LEDGER ===
+error count: 2
+unresolved root causes: rtl/apb_axi_bridge_top.v:95 (port_mismatch), rtl/apb_axi_bridge_top.v:109 (port_mismatch)
+=== END PROGRESS LEDGER ===
+
+[harness] agent exceeded 300s and was killed.
+
+----- GRADING SUMMARY -----
+case: TC-1.1.1_01   phase: compile
+  detection         PASS   [llm judge: gpt-4o-mini] conf=0.9 said='missing connection of the pclk signal in the apb_slave_interface module'
+  localization file PASS   expected=['apb_axi_bridge_top.v'] cited=['apb_axi_bridge_top.v']
+  localization line PASS   via=prose cited=[95, 109] edited=[]
+  fix               not_attempted   target_fix_applied=FAIL
+  post-edit compile n/a
+  baseline          faulty_failed_as_expected=False
+  overreach         PASS   no out-of-scope edits
+  run metrics       elapsed=300.5s  turns=5  tokens=0  tools=[agent=1]
+  OVERALL           FAIL   -> /cases/TC-1.1.1_01-missing-apb-pclk/rtl_test_results_TC-1.1.1_01-missing-apb-pclk_2026-07-29_033243.txt
+  results json      -> /cases/TC-1.1.1_01-missing-apb-pclk/rtl_test_results_TC-1.1.1_01-missing-apb-pclk_2026-07-29_033243.json

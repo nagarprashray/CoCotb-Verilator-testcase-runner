@@ -1,0 +1,6 @@
+sim_build/
+.venv/
+results/
+__pycache__/
+*.vcd
+*.fst

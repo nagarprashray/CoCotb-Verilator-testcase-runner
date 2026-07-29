@@ -1,0 +1,157 @@
+{
+  "case_id": "TC-1.1.1_01",
+  "case_dir": "/cases/TC-1.1.1_01-missing-apb-pclk",
+  "timestamp": "2026-07-29T03:37:47",
+  "phase": "compile",
+  "overall": "fail",
+  "invocation": "chipchop rtl --root .",
+  "agent_env": {
+    "LLM_MODE": "openai",
+    "LLM_MODEL": null
+  },
+  "results_txt": "/cases/TC-1.1.1_01-missing-apb-pclk/rtl_test_results_TC-1.1.1_01-missing-apb-pclk_2026-07-29_033243.txt",
+  "ground_truth": {
+    "fault_description": "TC-1.1.1 - Missing Clock",
+    "target": {
+      "target_module": "apb_axi_bridge_top",
+      "target_instance": "u_apb_slave",
+      "target_port": "pclk"
+    },
+    "expected_files": [
+      "rtl/apb_axi_bridge_top.v"
+    ],
+    "expected_line_ranges": {
+      "rtl/apb_axi_bridge_top.v": [
+        [
+          96,
+          102
+        ]
+      ]
+    }
+  },
+  "baseline": {
+    "phase": "compile",
+    "faulty_failed_as_expected": false,
+    "compile_ok": true,
+    "sim_passed": null
+  },
+  "axes": {
+    "detection": true,
+    "localization_file": true,
+    "localization_line": true,
+    "fix": "not_attempted",
+    "target_fix_applied": false,
+    "overreach_clean": true,
+    "post_edit_compile_ok": null
+  },
+  "results": {
+    "detection": {
+      "pass": true,
+      "method": "llm_judge",
+      "confidence": 0.9,
+      "stated_diagnosis": "missing connection of the pclk signal in the apb_slave_interface module",
+      "matches_fault": true,
+      "reasoning": "The agent correctly identified the missing pclk connection as the issue, which aligns with the injected fault description.",
+      "judge_model": "gpt-4o-mini"
+    },
+    "localization_file": {
+      "pass": true,
+      "expected": [
+        "apb_axi_bridge_top.v"
+      ],
+      "cited": [
+        "apb_axi_bridge_top.v"
+      ]
+    },
+    "localization_line": {
+      "pass": true,
+      "via": "prose",
+      "expected": [
+        [
+          95,
+          95
+        ],
+        [
+          96,
+          96
+        ],
+        [
+          96,
+          102
+        ],
+        [
+          97,
+          97
+        ],
+        [
+          98,
+          98
+        ],
+        [
+          99,
+          99
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          101,
+          101
+        ],
+        [
+          102,
+          102
+        ],
+        [
+          103,
+          103
+        ],
+        [
+          104,
+          104
+        ],
+        [
+          105,
+          105
+        ]
+      ],
+      "cited_lines": [
+        95,
+        109
+      ],
+      "edited_lines": []
+    },
+    "fix": {
+      "result": "not_attempted",
+      "detail": "agent made no edits to rtl/",
+      "post_edit_compile_ok": null,
+      "target_fix_applied": false
+    },
+    "overreach": {
+      "pass": true,
+      "out_of_scope_edits": [],
+      "edited_files_outside_golden": []
+    }
+  },
+  "analysis": {
+    "edit_vs_reasoning_divergence": false,
+    "target_fault_fixed": false,
+    "overreached": false
+  },
+  "agent_stats": {
+    "elapsed_s": 300.5,
+    "n_turns": 5,
+    "total_tokens": 0,
+    "tool_calls_by_type": {
+      "agent": 1
+    },
+    "n_tool_calls": 0,
+    "n_edits": 0,
+    "files_changed": [],
+    "transcript_chars": 3743,
+    "final_reply": "",
+    "rate_limited": false,
+    "timed_out": true
+  }
+}
