@@ -1,0 +1,12 @@
+{
+    "test_case_id": "TC-1.1.1_02",
+    "category": "Golden Functional Control",
+    "subcategory": "APB-to-AXI4 Bridge Smoke Test",
+    "tier": "Simulation",
+    "target_module": "apb_axi_bridge_top",
+    "fault_type": "None - golden pclk connection restored",
+    "expected_symptom": "Simulation completes after clock and reset activity",
+    "severity": "None",
+    "detection_phase": "Simulation",
+    "validation_status": "Ready"
+}
